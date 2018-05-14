@@ -1,7 +1,6 @@
 package gremgo
 
 import (
-	log	"github.com/sirupsen/logrus"
 	"net/http"
 	"time"
 

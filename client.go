@@ -2,9 +2,19 @@ package gremgo
 
 import (
 	"io/ioutil"
-	log	"github.com/sirupsen/logrus"
+	"github.com/karux/go-utils"
+	"github.com/sirupsen/logrus"
+
 	"sync"
 )
+
+var log *logrus.Logger
+
+func init() {
+	log = utils.GetLogger()
+
+}
+
 
 // Client is a container for the gremgo client.
 type Client struct {
@@ -59,7 +69,7 @@ func (c *Client) executeRequest(query string, bindings, rebindings map[string]st
 
 	msg, err := packageRequest(req)
 	if err != nil {
-		log.Println(err)
+		log.Warn(err)
 		return
 	}
 	c.responseNotifyer.Store(id, make(chan int, 1))
@@ -78,7 +88,7 @@ func (c *Client) Execute(query string, bindings, rebindings map[string]string) (
 func (c *Client) ExecuteFile(path string, bindings, rebindings map[string]string) (resp interface{}, err error) {
 	d, err := ioutil.ReadFile(path) // Read script from file
 	if err != nil {
-		log.Println(err)
+		log.Warn(err)
 		return
 	}
 	query := string(d)
