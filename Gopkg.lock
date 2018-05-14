@@ -8,6 +8,12 @@
   version = "v1.2.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/karux/go-utils"
+  packages = ["."]
+  revision = "0477f4860fcfccc2e67bc5e7dcc8508a1c900bfb"
+
+[[projects]]
   name = "github.com/satori/go.uuid"
   packages = ["."]
   revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
@@ -37,6 +43,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "3e33f86c60de604cf757aefd38689cee0345ba03af5fc6973dc5ffec39b82567"
+  inputs-digest = "4a4f2c014c57cd39406e30419bbc0ecf84c227a15e811a8340a6b664f4d40688"
   solver-name = "gps-cdcl"
   solver-version = 1
