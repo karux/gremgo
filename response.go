@@ -14,7 +14,8 @@ type response struct {
 func (c *Client) handleResponse(msg []byte) (err error) {
 	resp, err := marshalResponse(msg)
 	if err != nil {
-		return
+		// calling return without saveResponse will hang the connection
+		//		return
 	}
 	c.saveResponse(resp)
 	return
@@ -39,7 +40,7 @@ func marshalResponse(msg []byte) (resp response, err error) {
 	} else {
 		resp.data = result["data"]
 	}
-	err = nil
+	//err = nil
 	resp.requestid = j["requestId"].(string)
 	return
 }
@@ -56,8 +57,13 @@ func (c *Client) saveResponse(resp response) {
 	c.results.Store(resp.requestid, newdata) // Add new data to buffer for future retrieval
 	if resp.code == 200 || resp.code == 204 {
 		respNofifier, _ := c.responseNotifyer.LoadOrStore(resp.requestid, make(chan int, 1))
-		respNofifier.(chan int) <- 1
-	}
+		respNofifier.(chan int) <- 200
+	} else if resp.code == 597 || resp.code == 598  || resp.code == 599 {
+		// bail out
+		respNofifier, _ := c.responseNotifyer.LoadOrStore(resp.requestid, make(chan int, 500))
+		respNofifier.(chan int) <- 500
+}
+
 	c.respMutex.Unlock()
 	return
 }
@@ -66,7 +72,7 @@ func (c *Client) saveResponse(resp response) {
 func (c *Client) retrieveResponse(id string) (data []interface{}) {
 	resp, _ := c.responseNotifyer.Load(id)
 	n := <-resp.(chan int)
-	if n == 1 {
+	if n == 200 || n == 500 {
 		if dataI, ok := c.results.Load(id); ok {
 			data = dataI.([]interface{})
 			close(resp.(chan int))
