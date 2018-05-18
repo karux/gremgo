@@ -3,7 +3,6 @@ package gremgo
 import (
 	"net/http"
 	"time"
-
 	"github.com/gorilla/websocket"
 )
 
