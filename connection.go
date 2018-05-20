@@ -65,7 +65,7 @@ func (c *Client) writeWorker() { // writeWorker works on a loop and dispatches m
 		case msg := <-c.requests:
 			err := c.conn.write(msg)
 			if err != nil {
-				log.Warn(err)
+				log.Warn(err.Error())
 				c.Errored = true
 				break
 			}
@@ -77,7 +77,7 @@ func (c *Client) readWorker() { // readWorker works on a loop and sorts messages
 	for {
 		msg, err := c.conn.read()
 		if err != nil {
-			log.Warn(err)
+			log.Warn(err.Error())
 			c.Errored = true
 			break
 		}

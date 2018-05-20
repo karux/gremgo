@@ -3,16 +3,16 @@ package gremgo
 import (
 	"io/ioutil"
 	"github.com/karux/go-utils"
-	"github.com/sirupsen/logrus"
+
+	"go.uber.org/zap"
 
 	"sync"
 )
 
-var log *logrus.Logger
+var log *zap.Logger
 
 func init() {
 	log = utils.GetLogger()
-
 }
 
 
@@ -69,7 +69,7 @@ func (c *Client) executeRequest(query string, bindings, rebindings map[string]st
 
 	msg, err := packageRequest(req)
 	if err != nil {
-		log.Warn(err)
+		log.Warn(err.Error())
 		return
 	}
 	c.responseNotifyer.Store(id, make(chan int, 1))
@@ -88,7 +88,7 @@ func (c *Client) Execute(query string, bindings, rebindings map[string]string) (
 func (c *Client) ExecuteFile(path string, bindings, rebindings map[string]string) (resp interface{}, err error) {
 	d, err := ioutil.ReadFile(path) // Read script from file
 	if err != nil {
-		log.Warn(err)
+		log.Warn(err.Error())
 		return
 	}
 	query := string(d)
